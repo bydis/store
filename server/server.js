@@ -1,41 +1,26 @@
 import express from "express"; 
 import bodyParser from "body-parser"; 
-import pg from "pg"; 
+import "dotenv/config";
 
+import database from "./models/database.js"; 
 
 const app = express(); 
 
 
-app.use(bodyParser.urlencoded({extended: true})); 
+app.use(bodyParser.json()); 
 
-//used for dev purposes until deployment
-const port = 3000; 
+database.init(); 
 
-const db = new pg.Client({
-    user: "bydus", 
-    password: "", 
-    database: "store",
-    port: "5432", 
-    host: "localhost"
-}); 
-
-db.connect(() => 
-    {
-    console.log("Database connected!")
-    });
-
-async function insertData()
-{
-    await db.query("INSERT INTO test(name) VALUES($1)", ['Justin']); 
-    let theTest = await db.query("SELECT name FROM test"); 
-    const result = theTest.rows[0]; 
-    return result; 
-}
+database.createTable("nodetable", "email varchar, firstName varchar(200), lastName varchar(200), age int");
 
 
-app.listen(port, async () => 
+let categories = ["email", "firstName", "lastName"];
+
+let values = ["swervejones@gmail.com", "swerve", "jones"];
+//using PORT environment for when deployed but localhost 3000 while we dev 
+app.listen(process.env.PORT || 3000, async () => 
     {
         console.log("Listening on port 3000!"); 
-        let theTest = await insertData(); 
+        let theTest = await database.insertData("nodetable", categories, values ); 
         console.log(theTest); 
     }); 
