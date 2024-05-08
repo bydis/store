@@ -11,7 +11,7 @@ app.use(bodyParser.json());
 
 database.init(); 
 
-database.createTable("nodetable", "email varchar, firstName varchar(200), lastName varchar(200), age int");
+await database.createTable("nodetable", "id serial primary key, email varchar, firstName varchar(200), lastName varchar(200), age int");
 
 
 let categories = ["email", "firstName", "lastName"];

@@ -1,20 +1,21 @@
 import pg from "pg";
 import "dotenv/config";
 
-
+//Framework for node-postgres to easier accomplish tasks
 const database = 
     {
         db: null, 
 
         init: function init() 
         {
-            
+            //NOTE: DATABASE_URL is for future deployment on Heroku when the database will be imported. For now, user and passowrd are utilized for the localhost
             this.db = new pg.Client({
+                //connection string: process.env.DATABASE_URL
                 user: process.env.USER, 
                 password: process.env.DB_PASSWORD, 
                 database: "store",
-                port: process.env.PORT || "5432", 
-                host: process.env.HOST || "localhost"
+                port:  "5432", 
+                host:  "localhost"
             }); 
 
             this.db.connect(() => 
@@ -24,17 +25,19 @@ const database =
 
         },
        
-        //Takes .in a map for a parameter of varied length to create table
+        //If a table exists, the original table is dropped and replaced with a new table of the same name. 
         createTable: async function createTable(tableName, categories)
         {
+            await this.db.query(`DROP TABLE IF EXISTS ${tableName}`);
             await this.db.query(`CREATE TABLE ${tableName} ( ${categories} );`);
         },
   
         //insertData to automate insertion of any kind to any table                 
         //tableName is the name of the table you wish to insert data into
-        //the table categories are the categories you wish to modify
-        //the values are the string array of values you wish to add to the table 
-        //table categories must be an array of strings of columns or null by default
+        //tableCategories are the categories you wish to modify (null if not specified and all categories are to be modified)
+            //--table categories must be an array of strings of columns or null by default
+        //values is an array of values of any type you wish to add to the table
+
         insertData: async function insertData(tableName, tableCategories = "", values)
         {
             //valueInsertions array used to hold $ amounts based on number of added categories
@@ -72,6 +75,12 @@ const database =
             }
             const result = theTest.rows[0]; 
             return result;  
+        },
+        //wipes a table clean of all data; TODO: create a deletion function that deletes selected categories 
+        deleteAllTableData: async function deleteAllTableData(tableName)
+        {
+            await this.db.query(`DELETE FROM ${tableName}`); 
+            this.db.end(); 
         },
         shutdown: function shutdown()
         {
