@@ -1,0 +1,13 @@
+.store-item
+{
+    display: flex; 
+    flex-direction: column;
+    justify-content: center;
+    align-items: center; 
+    background-color: whitesmoke; 
+    border-radius: 10%;
+    width: 8em; 
+    height: 12em; 
+    font-size: 2rem;
+    margin: auto; 
+ } 

@@ -7,6 +7,11 @@ function App() {
   return (
     <>
         <Header />
+        <div className="store">
+          <StoreItem imgSource={pictureSrc} title="vite" price="$4.00"/> 
+          <StoreItem imgSource={pictureSrc} title="vite" price="$4.00"/> 
+          <StoreItem imgSource={pictureSrc} title="vite" price="$4.00"/> 
+        </div>
     </>
   )
 }
